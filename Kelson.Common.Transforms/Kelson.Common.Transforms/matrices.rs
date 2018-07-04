@@ -2,9 +2,9 @@ use std::ops::{ Index, Mul };
 use ::vectors::{ AffineVector, Vector };
 
 pub enum Cell {
-    I1, J1, K1, W1, 
-    I2, J2, K2, W2, 
-    I3, J3, K3, W3, 
+    I1, J1, K1, W1,
+    I2, J2, K2, W2,
+    I3, J3, K3, W3,
     I4, J4, K4, W4,
     Row(u8),
     Column(u8),
@@ -13,10 +13,10 @@ pub enum Cell {
 impl Cell {
     pub fn to_column(&self) -> Cell {
         match self {
-            &Cell::I1 => Cell::Column(0), &Cell::J1 => Cell::Column(4), &Cell::K1 => Cell::Column(8),  &Cell::W1 => Cell::Column(12), 
-            &Cell::I2 => Cell::Column(1), &Cell::J2 => Cell::Column(5), &Cell::K2 => Cell::Column(9),  &Cell::W2 => Cell::Column(13), 
-            &Cell::I3 => Cell::Column(2), &Cell::J3 => Cell::Column(6), &Cell::K3 => Cell::Column(10), &Cell::W3 => Cell::Column(14), 
-            &Cell::I4 => Cell::Column(3), &Cell::J4 => Cell::Column(7), &Cell::K4 => Cell::Column(14), &Cell::W4 => Cell::Column(15), 
+            &Cell::I1 => Cell::Column(0), &Cell::J1 => Cell::Column(4), &Cell::K1 => Cell::Column(8),  &Cell::W1 => Cell::Column(12),
+            &Cell::I2 => Cell::Column(1), &Cell::J2 => Cell::Column(5), &Cell::K2 => Cell::Column(9),  &Cell::W2 => Cell::Column(13),
+            &Cell::I3 => Cell::Column(2), &Cell::J3 => Cell::Column(6), &Cell::K3 => Cell::Column(10), &Cell::W3 => Cell::Column(14),
+            &Cell::I4 => Cell::Column(3), &Cell::J4 => Cell::Column(7), &Cell::K4 => Cell::Column(14), &Cell::W4 => Cell::Column(15),
             &Cell::Column(i) => Cell::Column(i),
             &Cell::Row(i) => Cell::Column((i * 4 % 16) + (i / 4))
         }
@@ -26,9 +26,9 @@ impl Cell {
 #[derive(Debug)]
 #[derive(PartialEq)]
 pub struct AffineMatrix {
-    i1 : f64, j1 : f64, k1 : f64, w1 : f64, 
-    i2 : f64, j2 : f64, k2 : f64, w2 : f64, 
-    i3 : f64, j3 : f64, k3 : f64, w3 : f64, 
+    i1 : f64, j1 : f64, k1 : f64, w1 : f64,
+    i2 : f64, j2 : f64, k2 : f64, w2 : f64,
+    i3 : f64, j3 : f64, k3 : f64, w3 : f64,
     i4 : f64, j4 : f64, k4 : f64, w4 : f64
 }
 
@@ -38,9 +38,9 @@ impl AffineMatrix {
     pub fn cvec(&self, column : u8) -> AffineVector {
         let start = (column - 1) * 4;
         AffineVector::new(
-            self[Cell::Column(start + 0)], 
-            self[Cell::Column(start + 1)], 
-            self[Cell::Column(start + 2)], 
+            self[Cell::Column(start + 0)],
+            self[Cell::Column(start + 1)],
+            self[Cell::Column(start + 2)],
             self[Cell::Column(start + 3)])
     }
 
@@ -48,10 +48,10 @@ impl AffineMatrix {
     pub fn rvec(&self, row : u8) -> AffineVector {
         let start = (row - 1) * 4;
         AffineVector::new(
-            self[Cell::Row(start + 0)], 
-            self[Cell::Row(start + 1)], 
-            self[Cell::Row(start + 2)], 
-            self[Cell::Row(start + 3)])    
+            self[Cell::Row(start + 0)],
+            self[Cell::Row(start + 1)],
+            self[Cell::Row(start + 2)],
+            self[Cell::Row(start + 3)])
     }
 
     pub fn multiply(&self, m : AffineMatrix) -> AffineMatrix {
@@ -81,8 +81,8 @@ impl AffineMatrix {
         Vector::new(a.x(), a.y(), a.z())
     }
 
-    pub fn inverse(&self) -> AffineMatrix {     
-        let m = self;   
+    pub fn inverse(&self) -> AffineMatrix {
+        let m = self;
         let s0 = m.i1 * m.j2 - m.i2 * m.j1;
         let s1 = m.i1 * m.k2 - m.i2 * m.k1;
         let s2 = m.i1 * m.w2 - m.i2 * m.w1;
@@ -94,25 +94,25 @@ impl AffineMatrix {
         let c3 = m.j3 * m.k4 - m.j4 * m.k3;
         let c2 = m.i3 * m.w4 - m.i4 * m.w3;
         let c1 = m.i3 * m.k4 - m.i4 * m.k3;
-        let c0 = m.i3 * m.j4 - m.i4 * m.j3;           
+        let c0 = m.i3 * m.j4 - m.i4 * m.j3;
         let d = 1.0 / (s0 * c5 - s1 * c4 + s2 * c3 + s3 * c2 - s4 * c1 + s5 * c0);
 
         AffineMatrix {
-            i1: ( m.j2 * c5 - m.k2 * c4 + m.w2 * c3) * d, 
-            j1: (-m.j1 * c5 + m.k1 * c4 - m.w1 * c3) * d, 
-            k1: ( m.j4 * s5 - m.k4 * s4 + m.w4 * s3) * d, 
+            i1: ( m.j2 * c5 - m.k2 * c4 + m.w2 * c3) * d,
+            j1: (-m.j1 * c5 + m.k1 * c4 - m.w1 * c3) * d,
+            k1: ( m.j4 * s5 - m.k4 * s4 + m.w4 * s3) * d,
             w1: (-m.j3 * s5 + m.k3 * s4 - m.w3 * s3) * d,
-            i2: (-m.i2 * c5 + m.k2 * c2 - m.w2 * c1) * d, 
-            j2: ( m.i1 * c5 - m.k1 * c2 + m.w1 * c1) * d, 
-            k2: (-m.i4 * s5 + m.k4 * s2 - m.w4 * s1) * d, 
+            i2: (-m.i2 * c5 + m.k2 * c2 - m.w2 * c1) * d,
+            j2: ( m.i1 * c5 - m.k1 * c2 + m.w1 * c1) * d,
+            k2: (-m.i4 * s5 + m.k4 * s2 - m.w4 * s1) * d,
             w2: ( m.i3 * s5 - m.k3 * s2 + m.w3 * s1) * d,
-            i3: ( m.i2 * c4 - m.j2 * c2 + m.w2 * c0) * d, 
-            j3: (-m.i1 * c4 + m.j1 * c2 - m.w1 * c0) * d, 
-            k3: ( m.i4 * s4 - m.j4 * s2 + m.w4 * s0) * d, 
+            i3: ( m.i2 * c4 - m.j2 * c2 + m.w2 * c0) * d,
+            j3: (-m.i1 * c4 + m.j1 * c2 - m.w1 * c0) * d,
+            k3: ( m.i4 * s4 - m.j4 * s2 + m.w4 * s0) * d,
             w3: (-m.i3 * s4 + m.j3 * s2 - m.w3 * s0) * d,
-            i4: (-m.i2 * c3 + m.j2 * c1 - m.k2 * c0) * d, 
-            j4: ( m.i1 * c3 - m.j1 * c1 + m.k1 * c0) * d, 
-            k4: (-m.i4 * s3 + m.j4 * s1 - m.k4 * s0) * d, 
+            i4: (-m.i2 * c3 + m.j2 * c1 - m.k2 * c0) * d,
+            j4: ( m.i1 * c3 - m.j1 * c1 + m.k1 * c0) * d,
+            k4: (-m.i4 * s3 + m.j4 * s1 - m.k4 * s0) * d,
             w4: ( m.i3 * s3 - m.j3 * s1 + m.k3 * s0) * d,
         }
     }
@@ -147,7 +147,7 @@ impl AffineMatrix {
             i4: 0., j4: 0., k4: 0., w4: 1.,
         }
     }
-            
+
     pub fn Translation(x : f64, y : f64, z : f64) -> AffineMatrix {
         AffineMatrix {
                 i1: 1., j1: 0., k1: 0., w1: x ,
@@ -156,7 +156,7 @@ impl AffineMatrix {
                 i4: 0., j4: 0., k4: 0., w4: 1.,
             }
     }
-    
+
     pub fn RotationX(theta : f64) -> AffineMatrix {
         let c = theta.cos();
         let s = theta.sin();
@@ -167,7 +167,7 @@ impl AffineMatrix {
             i4: 0., j4: 0., k4: 0., w4: 1.,
         }
     }
-    
+
     pub fn RotationY(theta : f64) -> AffineMatrix {
         let c = theta.cos();
         let s = theta.sin();
@@ -198,21 +198,21 @@ impl AffineMatrix {
             i4: 0., j4: 0., k4: 0., w4: 1.,
         }
     }
-    
+
     pub fn UniformScale(s : f64) -> AffineMatrix {
         AffineMatrix {
             i1: s , j1: 0., k1: 0., w1: 0.,
             i2: 0., j2: s , k2: 0., w2: 0.,
             i3: 0., j3: 0., k3: s , w3: 0.,
             i4: 0., j4: 0., k4: 0., w4: 1.,
-        }        
+        }
     }
 
     pub fn transpose(&self) -> AffineMatrix {
         AffineMatrix {
-            i1: self.i1, j1: self.i2, k1: self.i3, w1: self.i4, 
-            i2: self.j1, j2: self.j2, k2: self.j3, w2: self.j4, 
-            i3: self.k1, j3: self.k2, k3: self.k3, w3: self.k4, 
+            i1: self.i1, j1: self.i2, k1: self.i3, w1: self.i4,
+            i2: self.j1, j2: self.j2, k2: self.j3, w2: self.j4,
+            i3: self.k1, j3: self.k2, k3: self.k3, w3: self.k4,
             i4: self.w1, j4: self.w2, k4: self.w3, w4: self.w4
         }
     }
@@ -231,9 +231,9 @@ impl Index<Cell> for AffineMatrix {
     type Output = f64;
     fn index(&self, c : Cell) -> &f64 {
         match c {
-            Cell::I1 => &self.i1, Cell::I2 => &self.i2, Cell::I3 => &self.i3, Cell::I4 => &self.i4, 
-            Cell::J1 => &self.j1, Cell::J2 => &self.j2, Cell::J3 => &self.j3, Cell::J4 => &self.j4, 
-            Cell::K1 => &self.k1, Cell::K2 => &self.k2, Cell::K3 => &self.k3, Cell::K4 => &self.k4, 
+            Cell::I1 => &self.i1, Cell::I2 => &self.i2, Cell::I3 => &self.i3, Cell::I4 => &self.i4,
+            Cell::J1 => &self.j1, Cell::J2 => &self.j2, Cell::J3 => &self.j3, Cell::J4 => &self.j4,
+            Cell::K1 => &self.k1, Cell::K2 => &self.k2, Cell::K3 => &self.k3, Cell::K4 => &self.k4,
             Cell::W1 => &self.w1, Cell::W2 => &self.w2, Cell::W3 => &self.w3, Cell::W4 => &self.w4,
             Cell::Column(0) => &self.i1, Cell::Column(4) => &self.j1, Cell::Column(8) => &self.k1, Cell::Column(12) => &self.w1,
             Cell::Column(1) => &self.i2, Cell::Column(5) => &self.j2, Cell::Column(9) => &self.k2, Cell::Column(13) => &self.w2,
@@ -244,7 +244,7 @@ impl Index<Cell> for AffineMatrix {
             Cell::Row(4) => &self.i2, Cell::Row(5) => &self.j2, Cell::Row(6) => &self.k2, Cell::Row(7) => &self.w2,
             Cell::Row(8) => &self.i3, Cell::Row(9) => &self.j3, Cell::Row(10) =>&self.k3, Cell::Row(11) =>&self.w3,
             Cell::Row(12) =>&self.i4, Cell::Row(13) =>&self.j4, Cell::Row(14) =>&self.k4, Cell::Row(15) =>&self.w4,
-            Cell::Row(_) => panic!("Matrix Index out of bounds"), 
+            Cell::Row(_) => panic!("Matrix Index out of bounds"),
         }
     }
 }
@@ -253,10 +253,10 @@ impl Index<i32> for AffineMatrix {
     type Output = f64;
     fn index(&self, c : i32) -> &f64 {
         match c {
-            0 => &self.i1, 4 => &self.i2, 8 => &self.i3, 12=> &self.i4, 
-            1 => &self.j1, 5 => &self.j2, 9 => &self.j3, 13=> &self.j4, 
-            2 => &self.k1, 6 => &self.k2, 10=> &self.k3, 14=> &self.k4, 
-            3 => &self.w1, 7 => &self.w2, 11=> &self.w3, 15=> &self.w4,       
+            0 => &self.i1, 4 => &self.i2, 8 => &self.i3, 12=> &self.i4,
+            1 => &self.j1, 5 => &self.j2, 9 => &self.j3, 13=> &self.j4,
+            2 => &self.k1, 6 => &self.k2, 10=> &self.k3, 14=> &self.k4,
+            3 => &self.w1, 7 => &self.w2, 11=> &self.w3, 15=> &self.w4,
             _  => panic!("Matrix Index out of bounds")
         }
     }
