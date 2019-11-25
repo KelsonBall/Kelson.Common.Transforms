@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 namespace Kelson.Common.Transforms
 {
     [StructLayout(LayoutKind.Explicit)]
-    public readonly partial struct Transform
+    public readonly ref partial struct RefTransform
     {
         [FieldOffset(0)]
         public readonly float _i1;
@@ -61,7 +61,7 @@ namespace Kelson.Common.Transforms
         {
             get
             {
-                fixed (Transform* t = &this)
+                fixed (RefTransform* t = &this)
                     return *((float*)((void*)t) + index);
             }
         }
@@ -111,23 +111,23 @@ namespace Kelson.Common.Transforms
             3 => new RefVector4f(_w1, _w2, _w3, _w4),
             _ => throw new IndexOutOfRangeException(),
         };
-        
 
-        public static Transform FromRowMajorArray(double[] row_major_array) =>
-            new Transform(
+
+        public static RefTransform FromRowMajorArray(double[] row_major_array) =>
+            new RefTransform(
                 i1: row_major_array[0], j1: row_major_array[1], k1: row_major_array[2], w1: row_major_array[3],
                 i2: row_major_array[4], j2: row_major_array[5], k2: row_major_array[6], w2: row_major_array[7],
                 i3: row_major_array[8], j3: row_major_array[9], k3: row_major_array[10], w3: row_major_array[11],
                 i4: row_major_array[12], j4: row_major_array[13], k4: row_major_array[14], w4: row_major_array[15]);
 
-        public static Transform FromRowMajorArray(float[] row_major_array) =>
-            new Transform(
+        public static RefTransform FromRowMajorArray(float[] row_major_array) =>
+            new RefTransform(
                 i1: row_major_array[0], j1: row_major_array[1], k1: row_major_array[2], w1: row_major_array[3],
                 i2: row_major_array[4], j2: row_major_array[5], k2: row_major_array[6], w2: row_major_array[7],
                 i3: row_major_array[8], j3: row_major_array[9], k3: row_major_array[10], w3: row_major_array[11],
                 i4: row_major_array[12], j4: row_major_array[13], k4: row_major_array[14], w4: row_major_array[15]);
 
-        public Transform(
+        public RefTransform(
                 double i1, double j1, double k1, double w1,
                 double i2, double j2, double k2, double w2,
                 double i3, double j3, double k3, double w3,
@@ -140,7 +140,9 @@ namespace Kelson.Common.Transforms
         {
         }
 
-        public Transform(
+        public static unsafe explicit operator RefTransform(Transform v) => *(RefTransform*)&v;         
+
+        public RefTransform(
             float i1, float j1, float k1, float w1,
             float i2, float j2, float k2, float w2,
             float i3, float j3, float k3, float w3,
@@ -154,7 +156,7 @@ namespace Kelson.Common.Transforms
 
         public unsafe ReadOnlySpan<float> AsSpan()
         {
-            fixed (Transform* t = &this)
+            fixed (RefTransform* t = &this)
                 return new ReadOnlySpan<float>(t, 16);
         }
 
@@ -165,6 +167,5 @@ namespace Kelson.Common.Transforms
             var z = this * VectorConstruction.rvec(0, 0, 1);
             return $"[x:{x},y:{y},z:{z}]";
         }
-    }
+    }    
 }
-

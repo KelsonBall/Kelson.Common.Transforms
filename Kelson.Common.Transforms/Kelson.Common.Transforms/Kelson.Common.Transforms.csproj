@@ -1,12 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <LangVersion>latest</LangVersion>
-    <Optimize>true</Optimize>
+    <LangVersion>latest</LangVersion>    
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Kelson.Common.Vectors" Version="0.1.0" />
     <PackageReference Include="System.Memory" Version="4.5.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Kelson.Common.Vectors\Kelson.Common.Vectors\Kelson.Common.Vectors\Kelson.Common.Vectors.csproj" />
   </ItemGroup>
 </Project>
